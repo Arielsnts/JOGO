@@ -39,13 +39,22 @@ class Enemy{
         )
     }
 
-    shot(playerShot) {
+    shot(shotList) {
         const s = new Gunshot({
-            x: (this.position.x + this.width / 2) + 7,
-            y: this.position.y - 5
-        }, -8)
+            x: (this.position.x + this.width / 2) - 9,
+            y: this.position.y + this.heigth - 2
+        }, 8)
 
-        playerShot.push(s)
+        shotList.push(s)
+    }
+
+    hit(shot) {
+        return (
+        shot.position.x >= this.position.x &&
+        shot.position.x <= this.position.x + this.width &&
+        shot.position.y >= this.position.y &&
+        shot.position.y <= this.position.y + this.width
+        )
     }
 }
 

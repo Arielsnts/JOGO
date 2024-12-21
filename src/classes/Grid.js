@@ -31,7 +31,8 @@ class Grid {
         this.enemies.forEach(enemy => enemy.draw(ctx))
     }
 
-    update() {
+    update(playerStatus) {
+
         if (this.boardRight()) {
             this.direction = "left"
             this.moveDown = true
@@ -40,6 +41,8 @@ class Grid {
             this.direction = "right"
             this.moveDown = true
         }
+
+        if (!playerStatus) this.moveDown = false
 
         this.enemies.forEach((enemy) => {
 
@@ -66,6 +69,16 @@ class Grid {
         return this.enemies.some((enemy) => {
             return enemy.position.x <= 0
         })
+    }
+
+    getRandom() {
+        const index = Math.floor(Math.random() * this.enemies.length)
+        return this.enemies[index]
+    }
+
+    restart() {
+        this.enemies = this.init()
+        this.direction = "right"
     }
 }
 
