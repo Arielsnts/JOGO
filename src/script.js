@@ -1,4 +1,4 @@
-import Enemy from "./classes/Enemy.js"
+import Grid from "./classes/Grid.js"
 import Player from "./classes/Player.js"
 
 const canvas = document.querySelector("canvas")
@@ -12,7 +12,7 @@ ctx.imageSmoothingEnabled = false
 const player = new Player(canvas.width, canvas.height)
 const playerShot = []
 
-const enemy = new Enemy({x: 100, y: 100}, 5)
+const grid = new Grid(2, 5)
 
 const keys = {
     left: false,
@@ -41,6 +41,9 @@ const clearShot = () => {
 const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+    grid.draw(ctx)
+    // grid.update()
+
     drawShot()
     clearShot()
 
@@ -54,7 +57,6 @@ const gameLoop = () => {
     if (keys.rigth && player.position.x <= canvas.width - player.width) player.moveRigth()
 
     player.draw(ctx)
-    enemy.draw(ctx)
 
     requestAnimationFrame(gameLoop)
 }

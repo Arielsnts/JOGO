@@ -3,8 +3,8 @@ import Gunshot from "./Gunshot.js"
 
 class Enemy{
     constructor(position, velocity) {
-        this.width = 90
-        this.heigth = 90
+        this.width = 70
+        this.heigth = 70
         this.velocity = velocity
         this.position = position
 
@@ -21,8 +21,12 @@ class Enemy{
         this.position.x -= this.velocity
     }
     
-    moveRigth() {
+    moveRight() {
         this.position.x += this.velocity
+    }
+
+    moveDown() {
+        this.position.y += this.heigth
     }
 
     draw(ctx) {
