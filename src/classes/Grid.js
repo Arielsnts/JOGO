@@ -4,7 +4,7 @@ class Grid {
     constructor(rows, cols) {
         this.rows = rows
         this.cols = cols
-        this.enemyVelocity = 1
+        this.enemyVelocity = 1.5
 
         this.direction = "right"
         this.moveDown = false
@@ -18,8 +18,8 @@ class Grid {
         for (let row = 0; row < this.rows; row += 1) {
             for (let col = 0; col < this.cols; col += 1) {
                 const enemy = new Enemy({
-                    x: col * 70 + 20,
-                    y: row * 70 + 20
+                    x: col * 70 + 40,
+                    y: row * 70 + 40
                 }, this.enemyVelocity)
                 array.push(enemy)
             }

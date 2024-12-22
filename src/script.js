@@ -4,6 +4,17 @@ import Particle from "./classes/Particle.js"
 import Player from "./classes/Player.js"
 import { GAME_STATE } from "./utils/constants.js"
 
+const startScreen = document.querySelector(".start-screen")
+const gameOverScreen = document.querySelector(".game-over")
+const score = document.querySelector(".scoreSect")
+const scoreElement = document.querySelector(".score > span")
+const levelElement = document.querySelector(".level > span")
+const highElement = document.querySelector(".high > span")
+const buttonPlay = document.querySelector(".play")
+const buttonRestart = document.querySelector(".restart")
+
+gameOverScreen.remove()
+
 const canvas = document.querySelector("canvas")
 const ctx = canvas.getContext("2d")
 
@@ -12,7 +23,13 @@ canvas.height = innerHeight
 
 ctx.imageSmoothingEnabled = false
 
-let currentState = GAME_STATE.PLAYING
+let currentState = GAME_STATE.START
+
+const gameData = {
+    score: 0,
+    level: 1,
+    high: 0
+}
 
 const player = new Player(canvas.width, canvas.height)
 
@@ -21,7 +38,7 @@ const enemyShot = []
 const particles = []
 const obstacles = []
 
-const grid = new Grid(2, 5)
+const grid = new Grid(2, 4)
 
 const keys = {
     left: false,
@@ -30,6 +47,20 @@ const keys = {
         pressed: false,
         released: true
     }
+}
+
+const showGameData = () => {
+    scoreElement.textContent = gameData.score
+    levelElement.textContent = gameData.level
+    highElement.textContent = gameData.high
+}
+
+const incrementScore = (value) => {
+    gameData.score += value
+
+    if (gameData.score > gameData.high) [
+        gameData.high = gameData.score
+    ]
 }
 
 const initObstacles = () => {
@@ -109,6 +140,8 @@ const checkHitEnemy = () => {
                     y: enemy.position.y + enemy.heigth / 2
                 }, 30, "red")
 
+                incrementScore(50)
+
                 grid.enemies.splice(enemyIndex, 1)
                 playerShot.splice(shotIndex, 1)
             }
@@ -151,20 +184,25 @@ const gameOver = () => {
         player.alive = false
 
         currentState = GAME_STATE.GAME_OVER
+        document.body.append(gameOverScreen)
 }
 
 const spawnGrid = () => {
     if (grid.enemies.length === 0) {
-        grid.rows = Math.ceil(Math.random() *  2 + 1)
-        grid.cols = Math.ceil(Math.random() *  6 + 1)
+        grid.rows = Math.ceil(Math.random() *  3 + 1)
+        grid.cols = Math.ceil(Math.random() *  7 + 1)
         grid.restart()
+        gameData.level += 1
     }
+
 }
 
 
 const gameLoop = () => {
     if (currentState === GAME_STATE.PLAYING) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
+        
+        showGameData()
         
         grid.draw(ctx)
         grid.update(player.alive)
@@ -184,6 +222,7 @@ const gameLoop = () => {
 
         if (keys.shot.pressed && keys.shot.released) {
             player.shot(playerShot)
+
             keys.shot.released = false
         }
 
@@ -237,12 +276,35 @@ addEventListener("keyup", (event) => {
     }
 })
 
-setInterval(() => {
-    const enemy = grid.getRandom()
+buttonPlay.addEventListener("click", () => {
+    startScreen.remove()
+    score.style.display = "block" 
+    currentState = GAME_STATE.PLAYING
 
-    if (enemy) {
-        enemy.shot(enemyShot)
-    }
-}, 1000)
+    setInterval(() => {
+        const enemy = grid.getRandom()
+    
+        if (enemy) {
+            enemy.shot(enemyShot)
+        }
+    }, 600)
+})
+
+buttonRestart.addEventListener("click", () => {
+    currentState = GAME_STATE.PLAYING
+    player.alive = true
+
+    grid.enemies.length = 0
+    grid.enemyVelocity = 1.5
+
+    enemyShot.length = 0
+
+    gameData.score = 0
+    gameData.level = 0
+
+    gameOverScreen.remove()
+})
+
+
 
 gameLoop()
